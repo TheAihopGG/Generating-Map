@@ -7,10 +7,14 @@ class Game(Loop):
     def __init__(self) -> None:
         super().__init__()
 
-        self.cubic : Square = Square(self.screen, 500, 300, RED, 50)
+        self.cubic : Square = Square(self.screen, 500, 300)
+        self.cubic.color = RED
+        self.cubic.size = 40
         self.add_child(self.cubic)
 
-        self.add_child(PingPong(self.screen, 200, 100, BLUE, 15))
+        self.add_child(PingPong(self.screen, 200, 100, 1.5))
+
+        self.add_child(Sprite("Assets/town.png", self.screen, 200, 200, 4))
     
     def _process(self) -> None:
         while self.running:
@@ -32,15 +36,15 @@ class Game(Loop):
 
         if mouse_pressed[0] and not self.mouse_button_pressed[0]:
             self.mouse_button_pressed[0] = True
-            self.add_child(PingPong(self.screen, mouse_position[0], mouse_position[1], BLUE, 15))
+            self.add_child(PingPong(self.screen, mouse_position[0], mouse_position[1], 1.5))
 
         elif not mouse_pressed[0]:
             self.mouse_button_pressed[0] = False
 
 
 class PingPong(Circle):    
-    def __init__(self, screen, x = 0, y = 0, color = ..., size = 10):
-        super().__init__(screen, x, y, color, size)
+    def __init__(self, screen, x = 0, y = 0, scale = 1):
+        super().__init__(screen, x, y, scale)
         self.vec : list = [1, 1]
     
     def _process(self) -> None:
@@ -60,4 +64,5 @@ class PingPong(Circle):
 
 if __name__ == "__main__":
     game : Game = Game()
+    print(game)
     game._process()

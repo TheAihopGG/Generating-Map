@@ -51,6 +51,24 @@ class Loop:
         node.next = self.top
         self.top = node
    
+    def remove_child(self, node : Node) -> bool:
+        if self.is_empty():
+            return False # Элемент не найден (стек пуст)
+        
+        if self.top == node:
+            self.top = self.top.next  
+            return True  # Элемент найден (элемент самый последний)
+        
+        current = self.top
+        while current.next is not None:
+            if current.next == node:
+                # "Вырезаем" элемент из связного списка
+                current.next = current.next.next  
+                return True # Элемент найден (нашли)
+            current = current.next
+        
+        return False  # Элемент не найден (такого нет)
+
     def get_stack(self) -> list[Node]:
         array : list = []
         current : Node = self.top
@@ -58,3 +76,13 @@ class Loop:
             array.append(current)
             current = current.next
         return array
+
+    def __str__(self) -> str:
+        """Выводит стек в виде строки (для наглядности)"""
+        elements : list[Node] = []
+        current : Node = self.top
+        while current is not None:
+            elements.append(str(current))
+            current = current.next
+
+        return " -> ".join(reversed(elements)) if elements else "Пустой стек"
