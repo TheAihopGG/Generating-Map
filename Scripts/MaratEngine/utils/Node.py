@@ -21,32 +21,12 @@ class Node:
     def _process(self) -> None:
         pass
 
-class Cubic(Node):
+class Square(Node):
     def _draw(self) -> None:
         pygame.draw.rect(self.screen, self.color, (self.x, self.y, self.size, self.size))
 
 
-class Ball(Node):    
-    def __init__(self, screen, x = 0, y = 0, color = RED, size = 10):
-        super().__init__(screen, x, y, color, size)
-        self.vec = [1, 1]
-
+class Circle(Node):    
     def _draw(self) -> None:
         pygame.draw.circle(self.screen, self.color, (self.x, self.y), self.size)
-
-    def _process(self) -> None:
-        self.ping_pong_XD()
-    
-    def ping_pong_XD(self) -> None:
-        if self.x >= 1152:
-            self.vec[0] = -1
-        if self.x <= 0:
-            self.vec[0] = 1
-
-        if self.y >= 648:
-            self.vec[1] = -1
-        if self.y <= 0:
-            self.vec[1] = 1
-
-        self.x += self.vec[0] * 5
-        self.y += self.vec[1] * 5
+        

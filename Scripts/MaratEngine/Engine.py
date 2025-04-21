@@ -12,23 +12,24 @@ class Loop:
         pygame.init()
         pygame.display.set_caption("My Game")
 
-        self.FPS     : int = 60
-        self.HEIGHT  : int = 648
-        self.WIDTH   : int = 1152
-        self.running : bool = True
-        
+        self.FPS      : int = 60
+        self.HEIGHT   : int = 648
+        self.WIDTH    : int = 1152
+        self.running  : bool = True
+        self.BG_COLOR : tuple = BLACK
+
         self.top : Node = None
 
         self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
         self.clock = pygame.time.Clock()
         
-        self.pressed : list = [False, False, False]
+        self.mouse_button_pressed : list = [False, False, False]
 
     def _process(self):
         self.clock.tick(self.FPS)
 
         # Рендеринг
-        self.screen.fill(BLACK)
+        self.screen.fill(self.BG_COLOR)
         
         self._draw()
 
@@ -42,11 +43,11 @@ class Loop:
             current._draw()
             current._process()
             current = current.next
-    
+
     def is_empty(self):
         return self.top is None
     
-    def add_child(self, node) -> Node:
+    def add_child(self, node : Node) -> Node:
         node.next = self.top
         self.top = node
    
