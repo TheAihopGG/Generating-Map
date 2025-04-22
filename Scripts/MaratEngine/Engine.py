@@ -31,16 +31,16 @@ class Loop:
         # Рендеринг
         self.screen.fill(self.BG_COLOR)
         
-        self._draw()
+        self.draw()
 
         # после отрисовки всего, переворачиваем экран
         pygame.display.flip()
 
         
-    def _draw(self) -> None:
+    def draw(self) -> None:
         current : Node = self.top
         while current is not None:
-            current._draw()
+            current.draw()
             current._process()
             current = current.next
 

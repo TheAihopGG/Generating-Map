@@ -1,4 +1,5 @@
 import pygame
+import random
 from MaratEngine.Engine import *
 from MaratEngine.utils.Node import *
 
@@ -34,12 +35,24 @@ class Game(Loop):
         self.cubic.x = mouse_position[0] - self.cubic.size / 2
         self.cubic.y = mouse_position[1] - self.cubic.size / 2
 
+        # Левая кнопка мыши
         if mouse_pressed[0] and not self.mouse_button_pressed[0]:
             self.mouse_button_pressed[0] = True
             self.add_child(PingPong(self.screen, mouse_position[0], mouse_position[1], 1.5))
 
         elif not mouse_pressed[0]:
             self.mouse_button_pressed[0] = False
+
+        # Правая кнопка мыши
+        if mouse_pressed[2] and not self.mouse_button_pressed[2]:
+            self.mouse_button_pressed[2] = True
+            self.add_child(Sprite(
+                "Assets/town.png", self.screen, mouse_position[0] - 8*4, mouse_position[1] - 8*4, 
+                4, random.randint(-3, 3)
+                ))
+
+        elif not mouse_pressed[2]:
+            self.mouse_button_pressed[2] = False
 
 
 class PingPong(Circle):    
