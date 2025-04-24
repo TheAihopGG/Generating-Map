@@ -2,10 +2,12 @@ import pygame
 from MaratEngine.utils.Node import *
 
 
-BLACK : int = (0, 0, 0)
-WHITE : int = (255, 255, 255)
-RED   : int = (255, 0, 0)
-BLUE  : int = (0, 0, 255)
+BLACK  : int = (0, 0, 0)
+WHITE  : int = (255, 255, 255)
+RED    : int = (255, 0, 0)
+BLUE   : int = (0, 0, 255)
+YELLOW : int = (255, 255, 0)
+GREEN  : int = (0, 255, 0)
 
 class Loop:
     def __init__(self) -> None:
@@ -20,7 +22,8 @@ class Loop:
 
         self.top : Node = None
 
-        self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
+
+        self.update_screen_size(self.WIDTH, self.HEIGHT)
         self.clock = pygame.time.Clock()
         
         self.mouse_button_pressed : list = [False, False, False]
@@ -86,3 +89,8 @@ class Loop:
             current = current.next
 
         return " -> ".join(reversed(elements)) if elements else "Пустой стек"
+
+    def update_screen_size(self, width : int, height : int) -> None:
+        self.HEIGHT : int = height
+        self.WIDTH  : int = width
+        self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))

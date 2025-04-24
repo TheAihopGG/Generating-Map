@@ -32,18 +32,36 @@ class Node2D(Node):
 class Shapes(Node2D):
     def __init__(self, screen, x = 0, y = 0, scale = 1):
         super().__init__(screen, x, y, scale)
-        self.size : float = 10 * scale
+        self.size : float = 10 * self.scale
         self.color : tuple = WHITE
+        self.contour_thickness : int = 0
         
-class Square(Shapes):
+class Square(Shapes):    
+    def __init__(self, screen, x = 0, y = 0, scale = 1):
+        super().__init__(screen, x, y, scale)
+        self.border_radius = 0
+        
     def draw(self) -> None:
-        pygame.draw.rect(self.screen, self.color, (self.x, self.y, self.size, self.size))
+        pygame.draw.rect(
+            self.screen, self.color, 
+            (float(self.x), float(self.y), self.size * self.scale, self.size * self.scale), 
+            self.contour_thickness, self.border_radius)
 
-class Circle(Shapes):    
+class Circle(Shapes):
     def draw(self) -> None:
-        pygame.draw.circle(self.screen, self.color, (self.x, self.y), self.size)
+        pygame.draw.circle(self.screen, self.color, (self.x, self.y), self.size * self.scale, self.contour_thickness)
 
-
+class Triangle(Shapes):
+    def draw(self) -> None:
+        height = ((3 ** 0.5) / 2) * (self.size * self.scale)  # Высота треугольника
+        self.points = [
+            (self.x, self.y - height * 2/3),  # Верхняя вершина
+            (self.x - (self.size * self.scale) / 2, self.y + height / 3),  # Левая нижняя
+            (self.x + (self.size * self.scale) / 2, self.y + height / 3)  # Правая нижняя
+        ]
+        if not self.border_radius:
+            pygame.draw.polygon(self.screen, self.color, self.points)
+        pygame.draw.aalines(self.screen, self.color, True, self.points)
 
 
 # Картинки
@@ -73,4 +91,6 @@ class Sprite(pygame.sprite.Sprite, Node2D):
         self.surface.y = y
         
     def draw(self) -> None:
+        self.surface.x = self.x
+        self.surface.y = self.y
         self.screen.blit(self.image, self.surface)
