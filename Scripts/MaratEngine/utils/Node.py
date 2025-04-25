@@ -34,6 +34,7 @@ class Shapes(Node2D):
         super().__init__(screen, x, y, scale)
         self.size : float = 10 * self.scale
         self.color : tuple = WHITE
+        # заполнить фигуру
         self.contour_thickness : int = 0
         
 class Square(Shapes):    
@@ -62,6 +63,8 @@ class Triangle(Shapes):
         if not self.contour_thickness:
             pygame.draw.polygon(self.screen, self.color, self.points)
         pygame.draw.aalines(self.screen, self.color, True, self.points)
+
+
 
 
 # Картинки

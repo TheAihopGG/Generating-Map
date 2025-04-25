@@ -1,6 +1,6 @@
 import pygame
-from random import random
 from math import sqrt
+from random import random
 from MaratEngine.Engine import *
 from MaratEngine.utils.Node import *
 
@@ -11,12 +11,15 @@ class Game(Loop):
         pygame.display.set_caption("Evolution")
         self.update_screen_size(600, 600)
 
-        self.yellow_group : list = self.add_group(150, YELLOW)
-        self.red_group : list = self.add_group(150, RED)
-        self.green_group : list = self.add_group(150, GREEN)
+        self.yellow_group : list = self.add_group(100, YELLOW)
+        self.red_group : list = self.add_group(100, RED)
+        self.green_group : list = self.add_group(100, GREEN)
+        self.blue_group : list = self.add_group(100, BLUE)
 
-        self.actions : list = [(random() - 0.5)*2 for i in range(9)]
-        print(self.actions)        
+        self.groups : list[list] = [self.yellow_group, self.red_group, self.green_group, self.blue_group]
+
+        self.actions : list = [(random() - 0.5) * 2 for i in range(self.groups.__len__() ** 2)]
+        print(" > Значения притяжения для рандома: ", self.actions)
 
     def _process(self) -> None:
         while self.running:
@@ -26,25 +29,14 @@ class Game(Loop):
             
             super()._process()
             
-            self.rule_bird()
+            self.rule_random()
         
         pygame.quit()
 
     def rule_random(self):
-        # Взаимодействие зелёных
-        self.apply_rules(self.green_group, self.green_group, self.actions[0])
-        self.apply_rules(self.green_group, self.red_group, self.actions[1])
-        self.apply_rules(self.green_group, self.yellow_group, self.actions[2])
-
-        # Взаимодействие красных
-        self.apply_rules(self.red_group, self.red_group, self.actions[3])
-        self.apply_rules(self.red_group, self.yellow_group, self.actions[4])
-        self.apply_rules(self.red_group, self.green_group, self.actions[5])
-
-        # Взаимодействие жёлтых
-        self.apply_rules(self.yellow_group, self.yellow_group, self.actions[6])
-        self.apply_rules(self.yellow_group, self.green_group, self.actions[7])
-        self.apply_rules(self.yellow_group, self.red_group, self.actions[8])
+        for i, group1 in enumerate(self.groups):
+            for j, group2 in enumerate(self.groups):
+                self.apply_rules(group1, group2, self.actions[i * self.groups.__len__() + j])
 
     def rule_bird(self) -> None:
         self.apply_rules(self.green_group, self.green_group, -0.32)
@@ -104,8 +96,8 @@ class Game(Loop):
             particle1.x += particle1.velocity[0]
             particle1.y += particle1.velocity[1]
             
-            particle1.velocity[0] *= 0.5
-            particle1.velocity[1] *= 0.5
+            particle1.velocity[0] *= 0.4
+            particle1.velocity[1] *= 0.4
 
             # ускорение скорости
             particle1.velocity[0] += velocity_x
@@ -118,8 +110,9 @@ class Particle(Square):
         super().__init__(screen, x, y, scale)
         self.velocity : list = [0.0, 0.0]
         self.contour_thickness = 1
-        self.border_radius = 2
-        self.scale = 2
+        self.scale = 0.8
+
+        self.border_radius = 2 # Только для Square
 
     def _process(self) -> None:
         if self.x < 0 or self.x > game.WIDTH:
