@@ -2,12 +2,12 @@ import pygame
 from MaratEngine.utils.Node import *
 
 
-BLACK  : int = (0, 0, 0)
-WHITE  : int = (255, 255, 255)
-RED    : int = (255, 0, 0)
-BLUE   : int = (0, 0, 255)
-YELLOW : int = (255, 255, 0)
-GREEN  : int = (0, 255, 0)
+BLACK  : tuple = (0, 0, 0)
+WHITE  : tuple = (255, 255, 255)
+RED    : tuple = (255, 0, 0)
+BLUE   : tuple = (0, 0, 255)
+YELLOW : tuple = (255, 255, 0)
+GREEN  : tuple = (0, 255, 0)
 
 class Loop:
     def __init__(self) -> None:

@@ -1,10 +1,10 @@
 import pygame
 
 
-BLACK : int = (0, 0, 0)
-WHITE : int = (255, 255, 255)
-RED   : int = (255, 0, 0)
-BLUE  : int = (0, 0, 255)
+BLACK : tuple = (0, 0, 0)
+WHITE : tuple = (255, 255, 255)
+RED   : tuple = (255, 0, 0)
+BLUE  : tuple = (0, 0, 255)
 
 
 class Node:
@@ -15,8 +15,8 @@ class Node2D(Node):
     def __init__(self, screen, x : int = 0, y : float = 0, scale : float = 1.0) -> None:
         self.screen = screen
         self.next = None
-        self.x : int = x
-        self.y : int = y
+        self.x : float = x
+        self.y : float = y
         self.scale : float = scale
 
     def draw() -> None:
@@ -59,7 +59,7 @@ class Triangle(Shapes):
             (self.x - (self.size * self.scale) / 2, self.y + height / 3),  # Левая нижняя
             (self.x + (self.size * self.scale) / 2, self.y + height / 3)  # Правая нижняя
         ]
-        if not self.border_radius:
+        if not self.contour_thickness:
             pygame.draw.polygon(self.screen, self.color, self.points)
         pygame.draw.aalines(self.screen, self.color, True, self.points)
 
@@ -67,7 +67,7 @@ class Triangle(Shapes):
 # Картинки
 
 class Sprite(pygame.sprite.Sprite, Node2D):
-    def __init__(self, image_path, screen, x : int = 0, y : float = 0, scale : float = 1.0, angle : float = 0.0):
+    def __init__(self, image_path, screen, x : float = 0, y : float = 0, scale : float = 1.0, angle : float = 0.0):
         pygame.sprite.Sprite.__init__(self)  # Инициализация спрайта
         Node2D.__init__(self, screen, x, y, scale)  # Инициализация Node2D
 

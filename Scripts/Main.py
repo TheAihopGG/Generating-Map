@@ -30,7 +30,7 @@ class Game(Loop):
 
     def _input(self) -> None:
         mouse_pressed : tuple = pygame.mouse.get_pressed()
-        mouse_position : list = pygame.mouse.get_pos()
+        mouse_position : tuple = pygame.mouse.get_pos()
         
         self.cubic.x = mouse_position[0] - self.cubic.size / 2
         self.cubic.y = mouse_position[1] - self.cubic.size / 2

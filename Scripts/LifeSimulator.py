@@ -113,11 +113,11 @@ class Game(Loop):
             
 
 
-class Particle(Triangle):
+class Particle(Square):
     def __init__(self, screen, x = 0, y = 0, scale = 1):
         super().__init__(screen, x, y, scale)
         self.velocity : list = [0.0, 0.0]
-        # self.contour_thickness = 1
+        self.contour_thickness = 1
         self.border_radius = 2
         self.scale = 2
 
