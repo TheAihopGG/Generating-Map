@@ -3,6 +3,7 @@ import random
 from MaratEngine.Engine import *
 from MaratEngine.utils.Node import *
 
+
 class Game(Loop):
     def __init__(self) -> None:
         super().__init__()
