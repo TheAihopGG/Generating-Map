@@ -11,11 +11,9 @@ class Game(Loop):
         self.cubic : Square = Square(self.screen, 500, 300)
         self.cubic.color = RED
         self.cubic.size = 40
+        self.cubic.border_radius = 8
+        self.cubic.update_data()
         self.add_child(self.cubic)
-
-        self.add_child(PingPong(self.screen, 200, 100, 1.5))
-
-        self.add_child(Sprite("Assets/town.png", self.screen, 200, 200, 4))
     
     def _process(self) -> None:
         while self.running:
@@ -38,7 +36,7 @@ class Game(Loop):
         # Левая кнопка мыши
         if mouse_pressed[0] and not self.mouse_button_pressed[0]:
             self.mouse_button_pressed[0] = True
-            self.add_child(PingPong(self.screen, mouse_position[0], mouse_position[1], 1.5))
+            self.add_child(PingPong(self.screen, mouse_position[0], mouse_position[1], 2))
 
         elif not mouse_pressed[0]:
             self.mouse_button_pressed[0] = False
@@ -46,14 +44,7 @@ class Game(Loop):
         # Правая кнопка мыши
         if mouse_pressed[2] and not self.mouse_button_pressed[2]:
             self.mouse_button_pressed[2] = True
-            
-            self.add_child(
-                    Sprite(
-                        "Assets/town.png", self.screen, 
-                        mouse_position[0] - 8*4, mouse_position[1] - 8*4, 
-                        4, random.randint(-3, 3)
-                    )
-                )
+            self.add_child(Sprite("Assets/town.png", self.screen, mouse_position[0] - 8 * 4, mouse_position[1] - 8 * 4, 4))
 
         elif not mouse_pressed[2]:
             self.mouse_button_pressed[2] = False
@@ -66,14 +57,17 @@ class PingPong(Circle):
 
         self.color = YELLOW
         self.contour_thickness = 1
+        self.size = 15
+
+        self.update_data()
     
     def _process(self) -> None:
-        if self.x >= 1152:
+        if self.x >= game.WIDTH:
             self.vec[0] = -1
         if self.x <= 0:
             self.vec[0] = 1
 
-        if self.y >= 648:
+        if self.y >= game.HEIGHT:
             self.vec[1] = -1
         if self.y <= 0:
             self.vec[1] = 1

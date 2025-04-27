@@ -20,8 +20,7 @@ class Loop:
         self.running  : bool = True
         self.BG_COLOR : tuple = BLACK
 
-        self.top : Node = None
-
+        self.top : Node2D = None
 
         self.update_screen_size(self.WIDTH, self.HEIGHT)
         self.clock = pygame.time.Clock()
@@ -41,7 +40,7 @@ class Loop:
 
         
     def draw(self) -> None:
-        current : Node = self.top
+        current : Node2D = self.top
         while current is not None:
             current.draw()
             current._process()
@@ -50,11 +49,11 @@ class Loop:
     def is_empty(self):
         return self.top is None
     
-    def add_child(self, node : Node) -> Node:
+    def add_child(self, node : Node2D) -> Node2D:
         node.next = self.top
         self.top = node
    
-    def remove_child(self, node : Node) -> bool:
+    def remove_child(self, node : Node2D) -> bool:
         if self.is_empty():
             return False # Элемент не найден (стек пуст)
         
@@ -72,9 +71,9 @@ class Loop:
         
         return False  # Элемент не найден (такого нет)
 
-    def get_stack(self) -> list[Node]:
+    def get_stack(self) -> list[Node2D]:
         array : list = []
-        current : Node = self.top
+        current : Node2D = self.top
         while current is not None:
             array.append(current)
             current = current.next
@@ -82,8 +81,8 @@ class Loop:
 
     def __str__(self) -> str:
         """Выводит стек в виде строки (для наглядности)"""
-        elements : list[Node] = []
-        current : Node = self.top
+        elements : list[Node2D] = []
+        current : Node2D = self.top
         while current is not None:
             elements.append(str(current))
             current = current.next

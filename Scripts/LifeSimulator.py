@@ -54,11 +54,12 @@ class Game(Loop):
         self.apply_rules(self.green_group, self.yellow_group, -0.6)
         self.apply_rules(self.red_group, self.green_group, -0.2)
 
-    def add_group(self, score, color) -> list[Node]:
+    def add_group(self, score, color) -> list[Node2D]:
         group : list = []
         for i in range(score):
             new_particle : Particle = Particle(self.screen, self.random_pos(), self.random_pos())
             new_particle.color = color
+            new_particle.update_data()
             self.add_child(new_particle)
 
             group.append(new_particle)
@@ -111,6 +112,7 @@ class Particle(Square):
         self.velocity : list = [0.0, 0.0]
         self.contour_thickness = 1
         self.scale = 0.8
+        self.size = 10
 
         self.border_radius = 2 # Только для Square
 

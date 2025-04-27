@@ -7,70 +7,55 @@ RED   : tuple = (255, 0, 0)
 BLUE  : tuple = (0, 0, 255)
 
 
-class Node:
-    def __init__(self) -> None:
-        pass
-
-class Node2D(Node):
-    def __init__(self, screen, x : int = 0, y : float = 0, scale : float = 1.0) -> None:
+class Node2D:
+    def __init__(self, screen, x : int = 0, y : int = 0, scale : int = 1.0) -> None:
         self.screen = screen
         self.next = None
-        self.x : float = x
-        self.y : float = y
+        self.x : int = x
+        self.y : int = y
+        self.color : tuple = BLACK
+        self.size : float = scale
         self.scale : float = scale
-
-    def draw() -> None:
-        pass
+        self.angle : float = 0
+        self.image : pygame.Surface = pygame.Surface((self.size * self.scale, self.size * self.scale), pygame.SRCALPHA, 32)
+        self.rect : pygame.Rect = pygame.Rect(self.x, self.y, self.size * self.scale, self.size * self.scale)
+        
+    def draw(self) -> None:
+        self.screen.blit(self.image, (self.x, self.y))
+        self.rect = pygame.Rect(self.x, self.y, self.size * self.scale, self.size * self.scale)
 
     def _process(self) -> None:
         pass
+    
+    def update_data(self) -> None:
+        self.image = pygame.Surface((self.size * self.scale, self.size * self.scale), pygame.SRCALPHA, 32)
 
-
-
-# Фигуры
-
-class Shapes(Node2D):
-    def __init__(self, screen, x = 0, y = 0, scale = 1):
-        super().__init__(screen, x, y, scale)
-        self.size : float = 10 * self.scale
-        self.color : tuple = WHITE
-        # заполнить фигуру
-        self.contour_thickness : int = 0
         
-class Square(Shapes):    
+# Фигуры
+class Shape(pygame.sprite.Sprite, Node2D):
     def __init__(self, screen, x = 0, y = 0, scale = 1):
+        pygame.sprite.Sprite.__init__(self)  # Инициализация спрайта
+        Node2D.__init__(self, screen, x, y, scale)  # Инициализация Node2D
+        self.contour_thickness : int = 0 # заполнить фигуруs
+        
+class Square(Shape):    
+    def __init__(self, screen, x=0, y=0, scale=1):
         super().__init__(screen, x, y, scale)
         self.border_radius = 0
         
     def draw(self) -> None:
-        pygame.draw.rect(
-            self.screen, self.color, 
-            (float(self.x), float(self.y), self.size * self.scale, self.size * self.scale), 
-            self.contour_thickness, self.border_radius)
+        super().draw()
+        pygame.draw.rect(self.image, self.color, (0, 0, self.size * self.scale, self.size * self.scale), self.contour_thickness, self.border_radius)
 
-class Circle(Shapes):
+class Circle(Shape):
     def draw(self) -> None:
-        pygame.draw.circle(self.screen, self.color, (self.x, self.y), self.size * self.scale, self.contour_thickness)
-
-class Triangle(Shapes):
-    def draw(self) -> None:
-        height = ((3 ** 0.5) / 2) * (self.size * self.scale)  # Высота треугольника
-        self.points = [
-            (self.x, self.y - height * 2/3),  # Верхняя вершина
-            (self.x - (self.size * self.scale) / 2, self.y + height / 3),  # Левая нижняя
-            (self.x + (self.size * self.scale) / 2, self.y + height / 3)  # Правая нижняя
-        ]
-        if not self.contour_thickness:
-            pygame.draw.polygon(self.screen, self.color, self.points)
-        pygame.draw.aalines(self.screen, self.color, True, self.points)
-
-
+        super().draw()
+        pygame.draw.circle(self.image, self.color, (self.size * self.scale // 2, self.size * self.scale // 2), self.size * self.scale // 2, self.contour_thickness)
 
 
 # Картинки
-
 class Sprite(pygame.sprite.Sprite, Node2D):
-    def __init__(self, image_path, screen, x : float = 0, y : float = 0, scale : float = 1.0, angle : float = 0.0):
+    def __init__(self, image_path, screen, x : int = 0, y : int = 0, scale : float = 1.0):
         pygame.sprite.Sprite.__init__(self)  # Инициализация спрайта
         Node2D.__init__(self, screen, x, y, scale)  # Инициализация Node2D
 
@@ -85,15 +70,7 @@ class Sprite(pygame.sprite.Sprite, Node2D):
         )
 
         # Вращение
-        self.angle : float = angle
         self.image = pygame.transform.rotate(self.image, -self.angle)
 
-        # Получаем прямоугольник изображения
-        self.surface = self.image.get_rect()
-        self.surface.x = x
-        self.surface.y = y
-        
     def draw(self) -> None:
-        self.surface.x = self.x
-        self.surface.y = self.y
-        self.screen.blit(self.image, self.surface)
+        self.screen.blit(self.image, (self.x, self.y))
