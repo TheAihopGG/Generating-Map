@@ -1,5 +1,5 @@
 import pygame
-from MaratEngine.utils.Node import *
+from .utils.Node import Node2D
 
 
 BLACK  : tuple = (0, 0, 0)

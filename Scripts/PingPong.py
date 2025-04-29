@@ -12,7 +12,7 @@ class Game(Loop):
         self.cubic.color = RED
         self.cubic.size = 40
         self.cubic.border_radius = 8
-        self.cubic.update_data()
+
         self.add_child(self.cubic)
     
     def _process(self) -> None:
@@ -36,7 +36,7 @@ class Game(Loop):
         # Левая кнопка мыши
         if mouse_pressed[0] and not self.mouse_button_pressed[0]:
             self.mouse_button_pressed[0] = True
-            self.add_child(PingPong(self.screen, mouse_position[0], mouse_position[1], 2))
+            self.add_child(PingPong(self.screen, mouse_position[0], mouse_position[1], 40))
 
         elif not mouse_pressed[0]:
             self.mouse_button_pressed[0] = False
@@ -44,22 +44,18 @@ class Game(Loop):
         # Правая кнопка мыши
         if mouse_pressed[2] and not self.mouse_button_pressed[2]:
             self.mouse_button_pressed[2] = True
-            self.add_child(Sprite("Assets/town.png", self.screen, mouse_position[0] - 8 * 4, mouse_position[1] - 8 * 4, 4))
+            SCALE : int = 2
+            self.add_child(Sprite("Assets/town.png", self.screen, mouse_position[0] - 8 * SCALE, mouse_position[1] - 8 * SCALE, SCALE))
 
         elif not mouse_pressed[2]:
             self.mouse_button_pressed[2] = False
 
 
 class PingPong(Circle):    
-    def __init__(self, screen, x = 0, y = 0, scale = 1):
-        super().__init__(screen, x, y, scale)
+    def __init__(self, screen, x = 0, y = 0, size = 1):
+        super().__init__(screen, x, y, size)
         self.vec : list = [1, 1]
-
-        self.color = YELLOW
-        self.contour_thickness = 1
-        self.size = 15
-
-        self.update_data()
+        self.color = WHITE
     
     def _process(self) -> None:
         if self.x >= game.WIDTH:
@@ -78,5 +74,4 @@ class PingPong(Circle):
 
 if __name__ == "__main__":
     game : Game = Game()
-    print(game)
     game._process()
