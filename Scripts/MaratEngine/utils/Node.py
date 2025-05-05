@@ -43,9 +43,23 @@ class Circle(Shape):
         pygame.draw.circle(self.screen, self.color, (self.x, self.y), self.size // 2, self.contour_thickness)
 
 
+
+# Текст
+class Label(Node2D):    
+    def __init__(self, screen, text : str = "", x = 0, y = 0, size = 1):
+        super().__init__(screen, x, y, size)
+        self.font = pygame.font.Font(None, size) 
+        self.text : str = text
+
+    def _process(self) -> None:
+        text_surface = self.font.render(self.text, True, self.color)
+        text_rect = text_surface.get_rect(topleft=(self.x, self.y))
+        self.screen.blit(text_surface, text_rect)
+
+
 # Картинки
 class Sprite(pygame.sprite.Sprite, Node2D):
-    def __init__(self, image_path, screen, x : int = 0, y : int = 0, size : float = 1.0):
+    def __init__(self, screen, image_path, x : int = 0, y : int = 0, size : float = 1.0):
         pygame.sprite.Sprite.__init__(self)  # Инициализация спрайта
         Node2D.__init__(self, screen, x, y, size)  # Инициализация Node2D
 

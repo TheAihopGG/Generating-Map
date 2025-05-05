@@ -8,6 +8,9 @@ class Game(Loop):
     def __init__(self) -> None:
         super().__init__()
 
+        self.BG_PICT : Sprite
+        self.add_child(Sprite("Assets/rf-fiz-ng.jpg", self.screen, 0, 0, 0.8))
+
         self.cubic : Square = Square(self.screen, 500, 300)
         self.cubic.color = RED
         self.cubic.size = 40
@@ -22,6 +25,7 @@ class Game(Loop):
                     self.running = False
             
             super()._process()
+            
             self._input()
         
         pygame.quit()
