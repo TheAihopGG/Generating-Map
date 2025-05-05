@@ -20,7 +20,8 @@ class Loop:
         self.running  : bool = True
         self.BG_COLOR : tuple = BLACK
 
-        self.top : Node2D = None
+        self.head : Node2D = None
+        self.tail : Node2D = None
 
         self.update_screen_size(self.WIDTH, self.HEIGHT)
         self.clock = pygame.time.Clock()
@@ -40,40 +41,49 @@ class Loop:
 
         
     def draw(self) -> None:
-        current : Node2D = self.top
+        current : Node2D = self.head
         while current is not None:
             current.draw()
             current._process()
             current = current.next
 
     def is_empty(self):
-        return self.top is None
+        return self.tail is None
     
     def add_child(self, node : Node2D) -> Node2D:
-        node.next = self.top
-        self.top = node
-   
-    def remove_child(self, node : Node2D) -> bool:
+
+        # Если стэк пуст
         if self.is_empty():
-            return False # Элемент не найден (стек пуст)
-        
-        if self.top == node:
-            self.top = self.top.next  
-            return True  # Элемент найден (элемент самый последний)
-        
-        current = self.top
-        while current.next is not None:
-            if current.next == node:
-                # "Вырезаем" элемент из связного списка
-                current.next = current.next.next  
-                return True # Элемент найден (нашли)
-            current = current.next
-        
-        return False  # Элемент не найден (такого нет)
+            self.head = node
+            self.tail = node
+        else:
+            self.tail.next = node
+            node.prev = self.tail
+            self.tail = node
+
+        return node
+   
+    def remove_child(self, node : Node2D) -> None:
+        prev_node : Node2D = node.prev
+        next_node : Node2D = node.next
+
+        if node == self.head:
+            self.head = next_node
+
+        if node == self.tail:
+            self.tail = prev_node
+
+        # 1 -> (2) -> 3
+        if prev_node:
+            # 1 -> 3
+            prev_node.next = next_node
+        if next_node:
+            # 1 <- 3
+            next_node.prev = prev_node
 
     def get_stack(self) -> list[Node2D]:
         array : list = []
-        current : Node2D = self.top
+        current : Node2D = self.head
         while current is not None:
             array.append(current)
             current = current.next
@@ -82,7 +92,7 @@ class Loop:
     def __str__(self) -> str:
         """Выводит стек в виде строки (для наглядности)"""
         elements : list[Node2D] = []
-        current : Node2D = self.top
+        current : Node2D = self.head
         while current is not None:
             elements.append(str(current))
             current = current.next
