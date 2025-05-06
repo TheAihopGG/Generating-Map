@@ -60,7 +60,8 @@ while running:
     # Отрисовка
     screen.fill((30, 30, 30))
     
-    
+    # Поле ввода
+    pygame.draw.rect(screen, color, input_rect, 2)
     
     # Текст
     text_surface = font.render(input_text, True, (255, 255, 255))
