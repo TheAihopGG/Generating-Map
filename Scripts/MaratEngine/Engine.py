@@ -2,12 +2,12 @@ import pygame
 from .utils.Node import Node2D
 
 
-BLACK: tuple = (0, 0, 0)
-WHITE: tuple = (255, 255, 255)
-RED: tuple = (255, 0, 0)
-BLUE: tuple = (0, 0, 255)
-YELLOW: tuple = (255, 255, 0)
-GREEN: tuple = (0, 255, 0)
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+RED = (255, 0, 0)
+BLUE = (0, 0, 255)
+YELLOW = (255, 255, 0)
+GREEN = (0, 255, 0)
 
 
 class Loop:
@@ -15,25 +15,25 @@ class Loop:
         pygame.init()
         pygame.display.set_caption("My Game")
 
-        self.FPS: int = 60
-        self.HEIGHT: int = 648
-        self.WIDTH: int = 1152
-        self.running: bool = True
-        self.BG_COLOR: tuple = BLACK
+        self.fps = 60
+        self.height = 648
+        self.width = 1152
+        self.running = True
+        self.bg_color = BLACK
 
-        self.head: Node2D = None
-        self.tail: Node2D = None
+        self.head: Node2D | None = None
+        self.tail: Node2D | None = None
 
-        self.update_screen_size(self.WIDTH, self.HEIGHT)
+        self.update_screen_size(self.width, self.height)
         self.clock = pygame.time.Clock()
 
-        self.mouse_button_pressed: list = [False, False, False]
+        self.mouse_button_pressed = [False, False, False]
 
     def _process(self):
-        self.clock.tick(self.FPS)
+        self.clock.tick(self.fps)
 
         # Рендеринг
-        self.screen.fill(self.BG_COLOR)
+        self.screen.fill(self.bg_color)
 
         self.draw()
 
@@ -41,14 +41,14 @@ class Loop:
         pygame.display.flip()
 
     def draw(self) -> None:
-        current: Node2D = self.head
+        current: Node2D | None = self.head
         while current is not None:
             current.draw()
             current._process()
             current = current.next
 
     def is_empty(self):
-        return self.tail is None
+        return not self.tail
 
     def add_child(self, node: Node2D) -> Node2D:
 
@@ -57,9 +57,12 @@ class Loop:
             self.head = node
             self.tail = node
         else:
-            self.tail.next = node
-            node.prev = self.tail
-            self.tail = node
+            if self.tail:
+                self.tail.next = node
+                node.prev = self.tail
+                self.tail = node
+            else:
+                assert self.tail
 
         return node
 
@@ -82,8 +85,8 @@ class Loop:
             next_node.prev = prev_node
 
     def get_stack(self) -> list[Node2D]:
-        array: list = []
-        current: Node2D = self.head
+        array: list[Node2D] = []
+        current: Node2D | None = self.head
         while current is not None:
             array.append(current)
             current = current.next
@@ -91,8 +94,8 @@ class Loop:
 
     def __str__(self) -> str:
         """Выводит стек в виде строки (для наглядности)"""
-        elements: list[Node2D] = []
-        current: Node2D = self.head
+        elements: list[str] = []
+        current: Node2D | None = self.head
         while current is not None:
             elements.append(str(current))
             current = current.next
@@ -100,6 +103,6 @@ class Loop:
         return " -> ".join(reversed(elements)) if elements else "Пустой стек"
 
     def update_screen_size(self, width: int, height: int) -> None:
-        self.HEIGHT: int = height
-        self.WIDTH: int = width
-        self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
+        self.height = height
+        self.width = width
+        self.screen = pygame.display.set_mode((self.width, self.height))

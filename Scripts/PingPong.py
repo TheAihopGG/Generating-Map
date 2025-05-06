@@ -1,5 +1,4 @@
 import pygame
-import random
 from MaratEngine.Engine import *
 from MaratEngine.utils.Node import *
 
@@ -8,10 +7,10 @@ class Game(Loop):
     def __init__(self) -> None:
         super().__init__()
 
-        self.BG_PICT: Sprite
-        self.add_child(Sprite("Assets/rf-fiz-ng.jpg", self.screen, 0, 0, 0.8))
+        self.bg_texture: Sprite
+        self.add_child(Sprite(self.screen, "Assets/rf-fiz-ng.jpg", 0, 0, 0.8))
 
-        self.cubic: Square = Square(self.screen, 500, 300)
+        self.cubic = Square(self.screen, 500, 300)
         self.cubic.color = RED
         self.cubic.size = 40
         self.cubic.border_radius = 8
@@ -31,11 +30,11 @@ class Game(Loop):
         pygame.quit()
 
     def _input(self) -> None:
-        mouse_pressed: tuple = pygame.mouse.get_pressed()
-        mouse_position: tuple = pygame.mouse.get_pos()
+        mouse_pressed: tuple[bool, bool, bool] = pygame.mouse.get_pressed()
+        mouse_position: tuple[int, int] = pygame.mouse.get_pos()
 
-        self.cubic.x = mouse_position[0] - self.cubic.size / 2
-        self.cubic.y = mouse_position[1] - self.cubic.size / 2
+        self.cubic.x = mouse_position[0] - self.cubic.size // 2
+        self.cubic.y = mouse_position[1] - self.cubic.size // 2
 
         # Левая кнопка мыши
         if mouse_pressed[0] and not self.mouse_button_pressed[0]:
@@ -53,8 +52,8 @@ class Game(Loop):
             SCALE: int = 2
             self.add_child(
                 Sprite(
-                    "Assets/town.png",
                     self.screen,
+                    "Assets/town.png",
                     mouse_position[0] - 8 * SCALE,
                     mouse_position[1] - 8 * SCALE,
                     SCALE,
@@ -68,16 +67,16 @@ class Game(Loop):
 class PingPong(Circle):
     def __init__(self, screen, x=0, y=0, size=1):
         super().__init__(screen, x, y, size)
-        self.vec: list = [1, 1]
+        self.vec = [1, 1]
         self.color = WHITE
 
     def _process(self) -> None:
-        if self.x >= game.WIDTH:
+        if self.x >= game.width:
             self.vec[0] = -1
         if self.x <= 0:
             self.vec[0] = 1
 
-        if self.y >= game.HEIGHT:
+        if self.y >= game.height:
             self.vec[1] = -1
         if self.y <= 0:
             self.vec[1] = 1
@@ -87,5 +86,5 @@ class PingPong(Circle):
 
 
 if __name__ == "__main__":
-    game: Game = Game()
+    game = Game()
     game._process()

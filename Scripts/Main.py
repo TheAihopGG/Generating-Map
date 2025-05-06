@@ -1,6 +1,7 @@
 import pygame
 import math
-import random
+import itertools
+from typing import Final
 from MaratEngine.Engine import *
 from MaratEngine.utils.Node import *
 
@@ -11,16 +12,18 @@ class Game(Loop):
 
         self.add_child(Sprite(self.screen, "Assets/rf-fiz-ng.jpg", 0, 0, 0.8))
 
-        self.cubic: Square = Square(self.screen, 500, 300)
+        self.cubic = Square(self.screen, 500, 300)
         self.cubic.color = RED
         self.cubic.size = 20
         self.cubic.border_radius = 4
 
         self.add_child(self.cubic)
 
-        self.TOWNS: list[str] = ["Moscow", "Perm", "Ekaterinburg"]
-        self.player_towns: list[Town] = [None] * self.TOWNS.__len__()
-        self.current_town: int = 0
+        self.towns_names: list[str] = ["Moscow", "Perm", "Ekaterinburg"]
+        self.player_towns: list[Town | None] = list(
+            itertools.repeat(None, len(self.towns_names))
+        )
+        self.current_town = 0
 
     def _process(self) -> None:
         while self.running:
@@ -53,7 +56,7 @@ class Game(Loop):
                 vector = [town2.x - town1.x, town2.y - town1.y]
                 distance = math.sqrt(vector[0] ** 2 + vector[1] ** 2)
 
-                normalized_vector: list = [0, 0]
+                normalized_vector = [0.0, 0.0]
 
                 if distance:
                     normalized_vector = [vector[0] / distance, vector[1] / distance]
@@ -73,7 +76,7 @@ class Game(Loop):
         if self.player_towns[0]:
             self.distances()
 
-        SCALE: int = 2
+        SCALE: Final[int] = 2
         pos: list = [mouse_position[0] - 8 * SCALE, mouse_position[1] - 8 * SCALE]
 
         self.cubic.x = mouse_position[0] - self.cubic.size / 2
@@ -86,14 +89,20 @@ class Game(Loop):
             if not self.player_towns[self.current_town]:
                 self.player_towns[self.current_town] = Town(
                     self.screen,
-                    self.TOWNS[self.current_town],
+                    self.towns_names[self.current_town],
                     x=pos[0],
                     y=pos[1],
                     size=SCALE,
                 )
-                self.add_child(self.player_towns[self.current_town])
+                if player_current_town := self.player_towns[self.current_town]:
+                    self.add_child(player_current_town)
+                else:
+                    assert self.player_towns[self.current_town]
             else:
-                self.player_towns[self.current_town].change_position(pos)
+                if player_current_town := self.player_towns[self.current_town]:
+                    player_current_town.change_position(pos)
+                else:
+                    assert self.player_towns[self.current_town]
 
         elif not mouse_pressed[0]:
             self.mouse_button_pressed[0] = False
@@ -102,15 +111,15 @@ class Game(Loop):
 class Town(Sprite):
     def __init__(
         self, screen, name_town: str, image_path="Assets/town.png", x=0, y=0, size=1
-    ):
+    ) -> None:
         super().__init__(screen, image_path, x, y, size)
         self.name = name_town
 
-        self.label_town: Label = Label(self.screen, name_town, x, y + 32, 20)
+        self.label_town = Label(self.screen, name_town, x, y + 32, 20)
         self.label_town.color = BLACK
         game.add_child(self.label_town)
 
-    def change_position(self, pos: list) -> None:
+    def change_position(self, pos: list[int]) -> None:
         self.x = pos[0]
         self.y = pos[1]
 
@@ -119,5 +128,5 @@ class Town(Sprite):
 
 
 if __name__ == "__main__":
-    game: Game = Game()
+    game = Game()
     game._process()

@@ -1,4 +1,6 @@
+from __future__ import annotations
 import pygame
+import os
 
 
 BLACK: tuple = (0, 0, 0)
@@ -8,14 +10,20 @@ BLUE: tuple = (0, 0, 255)
 
 
 class Node2D:
-    def __init__(self, screen, x: int = 0, y: int = 0, size: int = 1.0) -> None:
+    def __init__(
+        self,
+        screen: pygame.Surface,
+        x=0,
+        y=0,
+        size=1,
+    ) -> None:
         self.screen = screen
-        self.prev = None
-        self.next = None
+        self.prev: Node2D | None = None
+        self.next: Node2D | None = None
         self.x: int = x
         self.y: int = y
         self.color: tuple = BLACK
-        self.size: float = size
+        self.size: int = size
 
     def draw(self) -> None:
         pass
@@ -26,13 +34,31 @@ class Node2D:
 
 # Фигуры
 class Shape(Node2D):
-    def __init__(self, screen, x=0, y=0, size=1):
-        Node2D.__init__(self, screen, x, y, size)  # Инициализация Node2D
+    def __init__(
+        self,
+        screen,
+        x=0,
+        y=0,
+        size=1,
+    ) -> None:
+        Node2D.__init__(
+            self,
+            screen=screen,
+            x=x,
+            y=y,
+            size=size,
+        )  # Инициализация Node2D
         self.contour_thickness: int = 0  # заполнить фигуруs
 
 
 class Square(Shape):
-    def __init__(self, screen, x=0, y=0, size=1):
+    def __init__(
+        self,
+        screen,
+        x=0,
+        y=0,
+        size=1,
+    ) -> None:
         super().__init__(screen, x, y, size)
         self.border_radius = 0
 
@@ -40,7 +66,12 @@ class Square(Shape):
         pygame.draw.rect(
             self.screen,
             self.color,
-            (self.x, self.y, self.size, self.size),
+            (
+                self.x,
+                self.y,
+                self.size,
+                self.size,
+            ),
             self.contour_thickness,
             self.border_radius,
         )
@@ -59,8 +90,15 @@ class Circle(Shape):
 
 # Текст
 class Label(Node2D):
-    def __init__(self, screen, text: str = "", x=0, y=0, size=1):
-        super().__init__(screen, x, y, size)
+    def __init__(
+        self,
+        screen: pygame.Surface,
+        text="",
+        x=0,
+        y=0,
+        size=1,
+    ):
+        super().__init__(screen=screen, x=x, y=y, size=size)
         self.font = pygame.font.Font(None, size)
         self.text: str = text
 
@@ -72,10 +110,16 @@ class Label(Node2D):
 
 # Картинки
 class Sprite(pygame.sprite.Sprite, Node2D):
-    def __init__(self, screen, image_path, x: int = 0, y: int = 0, size: float = 1.0):
+    def __init__(
+        self,
+        screen: pygame.Surface,
+        image_path: str,
+        x=0,
+        y=0,
+        size=1.0,
+    ):
         pygame.sprite.Sprite.__init__(self)  # Инициализация спрайта
         Node2D.__init__(self, screen, x, y, size)  # Инициализация Node2D
-
         # Загружаем изображение
         self.image = pygame.image.load(image_path).convert_alpha()
 
@@ -89,7 +133,7 @@ class Sprite(pygame.sprite.Sprite, Node2D):
         )
 
         # Вращение
-        self.angle: float = 0
+        self.angle = 0.0
         self.image = pygame.transform.rotate(self.image, -self.angle)
 
     def draw(self) -> None:

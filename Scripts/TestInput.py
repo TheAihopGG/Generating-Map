@@ -4,7 +4,7 @@ pygame.init()
 
 
 class Node2D:
-    def __init__(self, screen, x: int = 0, y: int = 0, size: int = 1.0) -> None:
+    def __init__(self, screen, x: int = 0, y: int = 0, size: int = 1) -> None:
         self.screen = screen
         self.prev = None
         self.next = None
