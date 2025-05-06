@@ -54,6 +54,7 @@ class Game(Loop):
                 distance = math.sqrt(vector[0] ** 2 + vector[1] ** 2)
 
                 normalized_vector : list = [0, 0]
+                
                 if distance:
                     normalized_vector = [vector[0] / distance, vector[1] / distance]
 
@@ -84,9 +85,12 @@ class Game(Loop):
         # Левая кнопка мыши
         if mouse_pressed[0] and not self.mouse_button_pressed[0]:
             self.mouse_button_pressed[0] = True
-            
-            self.player_towns[self.current_town] = Town(self.screen, self.TOWNS[self.current_town], x=pos[0], y=pos[1], size=SCALE)
-            self.add_child(self.player_towns[self.current_town])
+
+            if not self.player_towns[self.current_town]:                  
+                self.player_towns[self.current_town] = Town(self.screen, self.TOWNS[self.current_town], x=pos[0], y=pos[1], size=SCALE)
+                self.add_child(self.player_towns[self.current_town])
+            else:
+                self.player_towns[self.current_town].change_position(pos)
 
         elif not mouse_pressed[0]:
             self.mouse_button_pressed[0] = False
@@ -96,10 +100,17 @@ class Town(Sprite):
     def __init__(self, screen, name_town : str, image_path = "Assets/town.png", x = 0, y = 0, size = 1):
         super().__init__(screen, image_path, x, y, size)
         self.name = name_town
-        name_town : Label = Label(self.screen, name_town, x, y + 32, 20)
-        name_town.color = BLACK
-        game.add_child(name_town)
+
+        self.label_town : Label = Label(self.screen, name_town, x, y + 32, 20)
+        self.label_town.color = BLACK
+        game.add_child(self.label_town)
     
+    def change_position(self, pos : list) -> None:
+        self.x = pos[0]
+        self.y = pos[1]
+
+        self.label_town.x = pos[0]
+        self.label_town.y = pos[1] + 32
 
 
 if __name__ == "__main__":
