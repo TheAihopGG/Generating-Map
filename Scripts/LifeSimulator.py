@@ -11,37 +11,47 @@ class Game(Loop):
         pygame.display.set_caption("Evolution")
         self.update_screen_size(600, 600)
 
-        self.FORCE : float = 0.5
-        self.SIZE_PARTICLE : int = 4
-        LEN_PARTICLES : int = 100
+        self.FORCE: float = 0.5
+        self.SIZE_PARTICLE: int = 4
+        LEN_PARTICLES: int = 100
 
-        self.yellow_group : list = self.add_group(LEN_PARTICLES, YELLOW)
-        self.red_group : list = self.add_group(LEN_PARTICLES, RED)
-        self.green_group : list = self.add_group(LEN_PARTICLES, GREEN)
-        self.blue_group : list = self.add_group(LEN_PARTICLES, BLUE)
-        self.white_group : list = self.add_group(LEN_PARTICLES, WHITE)
+        self.yellow_group: list = self.add_group(LEN_PARTICLES, YELLOW)
+        self.red_group: list = self.add_group(LEN_PARTICLES, RED)
+        self.green_group: list = self.add_group(LEN_PARTICLES, GREEN)
+        self.blue_group: list = self.add_group(LEN_PARTICLES, BLUE)
+        self.white_group: list = self.add_group(LEN_PARTICLES, WHITE)
 
-        self.groups : list[list] = [self.yellow_group, self.red_group, self.green_group, self.blue_group, self.white_group]
+        self.groups: list[list] = [
+            self.yellow_group,
+            self.red_group,
+            self.green_group,
+            self.blue_group,
+            self.white_group,
+        ]
 
-        self.actions : list = [random() * 2 - 1 for _ in range(self.groups.__len__() ** 2)]
+        self.actions: list = [
+            random() * 2 - 1 for _ in range(self.groups.__len__() ** 2)
+        ]
         print(" > Значения притяжения для рандома: ", self.actions)
 
     def _process(self) -> None:
         while self.running:
-            for event in pygame.event.get():    
-                if event.type == pygame.QUIT: 
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
                     self.running = False
-            
+
             super()._process()
-            
+
             self.rule_random()
-        
+
         pygame.quit()
 
     def rule_random(self):
         for i, group1 in enumerate(self.groups):
             for j, group2 in enumerate(self.groups):
-                self.apply_rules(group1, group2, self.actions[i * self.groups.__len__() + j])
+                self.apply_rules(
+                    group1, group2, self.actions[i * self.groups.__len__() + j]
+                )
 
     def rule_bird(self) -> None:
         self.apply_rules(self.green_group, self.green_group, -0.32)
@@ -60,40 +70,41 @@ class Game(Loop):
         self.apply_rules(self.red_group, self.green_group, -0.2)
 
     def add_group(self, score, color) -> list[Node2D]:
-        group : list = []
+        group: list = []
 
         for i in range(score):
-            new_particle : Particle = Particle(self.screen, self.random_pos(), self.random_pos(), self.SIZE_PARTICLE)
+            new_particle: Particle = Particle(
+                self.screen, self.random_pos(), self.random_pos(), self.SIZE_PARTICLE
+            )
             new_particle.color = color
             self.add_child(new_particle)
             group.append(new_particle)
 
         return group
 
-    
     def random_pos(self) -> int:
-        return random() * (self.WIDTH - 100) + 50 
+        return random() * (self.WIDTH - 100) + 50
 
-    def apply_rules(self, group1 : list, group2 : list, g : float) -> None:
+    def apply_rules(self, group1: list, group2: list, g: float) -> None:
         for particle1 in group1:
             # сила притяжения
-            velocity : list = [0.0, 0.0]
-            
+            velocity: list = [0.0, 0.0]
+
             for particle2 in group2:
                 if particle1 == particle2:
                     continue
 
                 # векторы - стороны
-                dx : float = particle1.x - particle2.x
-                dy : float = particle1.y - particle2.y
+                dx: float = particle1.x - particle2.x
+                dy: float = particle1.y - particle2.y
 
                 # вычисляем их гиаптинузу
-                dist_sq : float = sqrt(dx * dx + dy * dy)
+                dist_sq: float = sqrt(dx * dx + dy * dy)
 
                 if 0 < dist_sq < 80:
                     # сила притяяжения
-                    f : float = g / dist_sq
-                    
+                    f: float = g / dist_sq
+
                     # прибавляем притяжение к 2 измерениям
                     velocity[0] += f * dx
                     velocity[1] += f * dy
@@ -101,12 +112,12 @@ class Game(Loop):
             # движение
             particle1.x += (particle1.velocity[0] + velocity[0]) * self.FORCE
             particle1.y += (particle1.velocity[1] + velocity[1]) * self.FORCE
-            
+
 
 class Particle(Square):
-    def __init__(self, screen, x = 0, y = 0, scale = 1):
+    def __init__(self, screen, x=0, y=0, scale=1):
         super().__init__(screen, x, y, scale)
-        self.velocity : list = [0.0, 0.0]
+        self.velocity: list = [0.0, 0.0]
 
     def _process(self) -> None:
         if self.x < 0 or self.x > game.WIDTH:
@@ -115,6 +126,7 @@ class Particle(Square):
         if self.y < 0 or self.y > game.HEIGHT:
             self.y = max(0, min(game.HEIGHT - self.size, self.y))
 
+
 if __name__ == "__main__":
-    game : Game = Game()
+    game: Game = Game()
     game._process()
